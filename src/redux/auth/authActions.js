@@ -33,9 +33,8 @@ const logoutRequest = () => ({
     type: types.LOGOUT_REQUEST,
 });
 
-const logoutSuccess = value => ({
+const logoutSuccess = () => ({
     type: types.LOGOUT_SUCCESS,
-    payload: value,
 });
 
 const logoutError = error => ({

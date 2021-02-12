@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import authOperators from "../redux/auth/authOperators";
 
 class Login extends Component {
     state = {
-        name: '',
+        email: '',
         password: '',
     }
 
@@ -14,23 +16,25 @@ class Login extends Component {
 
     submitForm = event => {
         event.preventDefault()
+
+        this.props.onLogin(this.state)
         this.reset()
     }
 
-    reset = () => this.setState({name: "", password: ""});
+    reset = () => this.setState({email: "", password: ""});
 
     render() {
-        const {name, password} = this.state;
+        const {email, password} = this.state;
 
         return (
             <>
                 <h1>Login page</h1>
                 <form onSubmit={this.submitForm}>
-                    <p>Name</p>
+                    <p>Email</p>
                     <label>
                         <input type="text"
-                               name="name"
-                               value={name}
+                               name="email"
+                               value={email}
                                onChange={this.handleChange}/>
                     </label>
                     <p>Password</p>
@@ -48,5 +52,12 @@ class Login extends Component {
     }
 };
 
+// const mapStateToProps = state =>({
+//
+// });
 
-export default Login;
+const mapDispatchToProps = dispatch =>({
+    onLogin: data => dispatch(authOperators.logIn(data))
+});
+
+export default connect(null, mapDispatchToProps)(Login);

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import appActions from "./phoneBookActions";
 
-axios.defaults.baseURL = 'http://localhost:4040/';
+// axios.defaults.baseURL = 'http://localhost:4040/';
 
 const getContacts = () => dispatch => {
 dispatch(appActions.getContactRequest())
