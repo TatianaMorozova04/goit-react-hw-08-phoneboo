@@ -24,7 +24,7 @@ const mapDispatchToProps = {
     onLogout: authOperators.logOut,
 };
 
-//
+//Выше сокращенная запись
 // const mapDispatchToProps = dispatch => ({
 //     onLogout: () => dispatch(authOperators.logOut)
 // });

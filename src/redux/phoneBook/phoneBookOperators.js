@@ -1,7 +1,7 @@
 import axios from 'axios'
 import appActions from "./phoneBookActions";
 
-// axios.defaults.baseURL = 'http://localhost:4040/';
+axios.defaults.baseURL = 'https://goit-phonebook-api.herokuapp.com';
 
 const getContacts = () => dispatch => {
 dispatch(appActions.getContactRequest())
@@ -9,7 +9,7 @@ dispatch(appActions.getContactRequest())
     axios
         .get('/contacts')
         .then(({data}) => dispatch(appActions.getContactSuccess(data)))
-        .catch(error => dispatch(appActions.getContactError(error)))
+        .catch(error => dispatch(appActions.getContactError(error.message)))
 }
 
 const addContact = contact => dispatch => {
@@ -18,16 +18,16 @@ const addContact = contact => dispatch => {
     axios
         .post('/contacts', contact)
         .then(({data}) => dispatch(appActions.addContactSuccess(data)))
-        .catch(error => dispatch(appActions.addContactError(error)))
+        .catch(error => dispatch(appActions.addContactError(error.message)))
 }
 
-const deleteContact = id => dispatch => {
+const deleteContact = contactId => dispatch => {
     dispatch(appActions.deleteContactRequest())
 
     axios
-        .delete(`/contacts/${id}`)
-        .then(() => dispatch(appActions.deleteContactSuccess(id)))
-        .catch(error => dispatch(appActions.deleteContactError()))
+        .delete(`/contacts/${contactId}`)
+        .then(() => dispatch(appActions.deleteContactSuccess(contactId)))
+        .catch(error => dispatch(appActions.deleteContactError(error.message)))
 }
 
 

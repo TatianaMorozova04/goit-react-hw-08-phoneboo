@@ -1,12 +1,24 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import authOperators from "../redux/auth/authOperators";
+import authSelectors from "../redux/auth/authSelectors";
+
+const TOKEN = 'token';
 
 class Login extends Component {
     state = {
         email: '',
-        password: '',
+        password: ''
     }
+
+    componentDidUpdate(prevProps, prevState) {
+       const getToken = this.props.token;
+
+        if(getToken) {
+            localStorage.setItem(TOKEN, JSON.stringify(getToken));
+        }
+    }
+
 
     handleChange = event => {
         const {name, value} = event.currentTarget;
@@ -52,12 +64,12 @@ class Login extends Component {
     }
 };
 
-// const mapStateToProps = state =>({
-//
-// });
+const mapStateToProps = state => ({
+    token: authSelectors.getIsAuthenticated(state)
+});
 
 const mapDispatchToProps = dispatch =>({
     onLogin: data => dispatch(authOperators.logIn(data))
 });
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

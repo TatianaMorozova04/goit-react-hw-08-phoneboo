@@ -5,12 +5,13 @@ import AuthNav from "./AuthNav";
 import {connect} from 'react-redux';
 import authSelectors from './redux/auth/authSelectors';
 
-const AppBar = ({isAuthenticated}) => (
+const AppBar = ({isAuthenticated}) => {
+    return (
     <>
         <Navigation/>
         {isAuthenticated ? <UserPage/> : <AuthNav/>}
     </>
-);
+)};
 
 const mapStateToProps = state => ({
     isAuthenticated: authSelectors.getIsAuthenticated(state),

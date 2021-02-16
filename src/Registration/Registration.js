@@ -1,12 +1,23 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import authOperators from "../redux/auth/authOperators";
+import authSelectors from "../redux/auth/authSelectors";
+
+const TOKEN = 'token';
 
 class Registration extends Component {
     state = {
         name: '',
         email: '',
         password: '',
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const getToken = this.props.token;
+
+        if(getToken) {
+            localStorage.setItem(TOKEN, JSON.stringify(getToken));
+        }
     }
 
     handleChange = event => {
@@ -61,9 +72,9 @@ class Registration extends Component {
 };
 
 
-// const mapStateToProps = state => ({
-//
-// })
+const mapStateToProps = state => ({
+    token: authSelectors.getIsAuthenticated(state)
+});
 
 const mapDispatchToProps = dispatch => ({
     onRegistration: (data) => dispatch(authOperators.registration(data)),
@@ -74,4 +85,4 @@ const mapDispatchToProps = dispatch => ({
 //     onRegistration: authOperators.registration,
 // }
 
-export default connect(null, mapDispatchToProps)(Registration);
+export default connect(mapStateToProps, mapDispatchToProps)(Registration);

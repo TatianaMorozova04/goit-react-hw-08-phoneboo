@@ -2,6 +2,7 @@ import axios from 'axios'
 import authActions from "./authActions";
 
 axios.defaults.baseURL = 'https://goit-phonebook-api.herokuapp.com';
+const TOKEN = 'token';
 
 
 const token = {
@@ -14,55 +15,85 @@ const token = {
 };
 
 
-const registration = credential => async dispatch => {
+const registration = credential => dispatch => {
     dispatch(authActions.registrationRequest());
 
-    try {
-        const response = await axios.post('/users/signup', credential);
-
-        token.set(response.data.token);
-        dispatch(authActions.registrationSuccess(response.data));
-    } catch (error) {
-        dispatch(authActions.registrationError(error.message))
-    }
+    axios
+        .post('/users/signup', credential)
+        .then(response => {
+            const getResponse = response.data;
+            token.set(getResponse.token);
+            dispatch(authActions.registrationSuccess(getResponse))
+        })
+        .catch(error => dispatch(authActions.registrationError(error.message)))
 };
 
-
-const logIn = credential => async dispatch => {
+const logIn = credential => dispatch => {
     dispatch(authActions.loginRequest());
 
-    try {
-        const response = await axios.post('/users/login', credential);
-
-        token.set(response.data.token);
-        dispatch(authActions.loginSuccess(response.data));
-    } catch (error) {
-        dispatch(authActions.loginError(error.message))
-    }
+    axios
+        .post('/users/login', credential)
+        .then(response => {
+            const getResponse = response.data;
+            token.set(getResponse.token);
+            dispatch(authActions.loginSuccess(getResponse));
+        })
+        .catch(error => dispatch(authActions.loginError(error.message)))
 };
 
-const logOut = () => async dispatch => {
+const logOut = () => dispatch => {
     dispatch(authActions.logoutRequest());
 
-    try {
-        await axios.post('/users/logout');
+    axios
+        .post('/users/logout')
+        .then(() => {
+            token.unset();
+            dispatch(authActions.logoutSuccess());
+        })
+        .catch(error => dispatch(authActions.logoutError(error.message)));
+};
 
-        token.unset();
-        dispatch(authActions.logoutSuccess());
+// const getCurrentUser = () => dispatch => {
+//     const getToken = localStorage.getItem(TOKEN);
+//
+//     if (!axios.defaults.headers.common.Authorization) {
+//         token.set(JSON.parse(getToken));
+//     }
+//
+//     dispatch(authActions.getCurrentUserRequest());
+//
+//     axios
+//         .get('/users/current')
+//         .then(response => {
+//             console.log('log in then')
+//             dispatch(authActions.getCurrentUserSuccess(response.data));
+//         })
+//         .catch(error => {
+//             console.log('log in catch')
+//             dispatch(authActions.getCurrentUserError(error.message))
+//         })
+// }
+
+
+const getCurrentUser = () => async dispatch => {
+    const getToken = localStorage.getItem(TOKEN);
+
+    if (!axios.defaults.headers.common.Authorization) {
+        token.set(JSON.parse(getToken));
+    }
+
+    dispatch(authActions.getCurrentUserRequest());
+
+    try {
+        const response = await axios.get('/users/current');
+        dispatch(authActions.getCurrentUserSuccess(response.data));
     } catch (error) {
-        dispatch(authActions.logoutError(error.message));
+        console.log(error);
+        dispatch(authActions.getCurrentUserError(error.message))
     }
 };
 
 
-const getCurrentUser = () => dispatch => {
-    dispatch()
-
-    axios
-        .delete
-        .then()
-        .catch()
-}
 
 export default {
     registration,
@@ -72,39 +103,59 @@ export default {
 }
 
 
-// const registration = () => dispatch => {
-//     dispatch(dispatch(authActions.registrationRequest()))
+// const registration = credential => async dispatch => {
+//     dispatch(authActions.registrationRequest());
 //
-//     axios
-//         .post('/users/signup')
-//         .then(({data}) => dispatch(authActions.registrationSuccess(data.credential)))
-//         .catch(error => dispatch(authActions.registrationError(error)))
-// }
+//     try {
+//         const response = await axios.post('/users/signup', credential);
 //
-// const logIn = () => dispatch => {
-//     dispatch()
+//         token.set(response.data.token);
+//         dispatch(authActions.registrationSuccess(response.data));
+//     } catch (error) {
+//         dispatch(authActions.registrationError(error.message))
+//     }
+// };
+
+// const logIn = credential => async dispatch => {
+//     dispatch(authActions.loginRequest());
 //
-//     axios
-//         .post
-//         .then()
-//         .catch()
-// }
+//     try {
+//         const response = await axios.post('/users/login', credential);
 //
-// const logOut = () => dispatch => {
-//     dispatch()
+//         token.set(response.data.token);
+//         dispatch(authActions.loginSuccess(response.data));
+//     } catch (error) {
+//         dispatch(authActions.loginError(error.message))
+//     }
+// };
+
+// const logOut = () => async dispatch => {
+//     dispatch(authActions.logoutRequest());
 //
-//     axios
-//         .delete
-//         .then()
-//         .catch()
-// }
+//     try {
+//         await axios.post('/users/logout');
 //
+//         token.unset();
+//         dispatch(authActions.logoutSuccess());
+//     } catch (error) {
+//         dispatch(authActions.logoutError(error.message));
+//     }
+// };
+
+// const getCurrentUser = () => async dispatch => {
+//     const getToken = localStorage.getItem(TOKEN);
 //
-// const getCurrentUser = () => dispatch => {
-//     dispatch()
+//     if (!axios.defaults.headers.common.Authorization) {
+//         token.set(JSON.parse(getToken));
+//     }
 //
-//     axios
-//         .delete
-//         .then()
-//         .catch()
-// }
+//     dispatch(authActions.getCurrentUserRequest());
+//
+//     try {
+//         const response = await axios.get('/users/current');
+//
+//         dispatch(authActions.getCurrentUserSuccess(response.data));
+//     } catch (error) {
+//         dispatch(authActions.getCurrentUserError(error.message))
+//     }
+// };

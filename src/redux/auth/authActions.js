@@ -1,5 +1,6 @@
 import types from './authTypes'
 
+
 const registrationRequest = () => ({
     type: types.REGISTRATION_REQUEST,
 });
@@ -31,6 +32,10 @@ const loginError = error => ({
 
 const logoutRequest = () => ({
     type: types.LOGOUT_REQUEST,
+    payload: {
+    // delete clear
+        reset: localStorage.clear(),
+    },
 });
 
 const logoutSuccess = () => ({
