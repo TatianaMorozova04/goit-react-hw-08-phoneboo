@@ -53,29 +53,7 @@ const logOut = () => dispatch => {
         .catch(error => dispatch(authActions.logoutError(error.message)));
 };
 
-// const getCurrentUser = () => dispatch => {
-//     const getToken = localStorage.getItem(TOKEN);
-//
-//     if (!axios.defaults.headers.common.Authorization) {
-//         token.set(JSON.parse(getToken));
-//     }
-//
-//     dispatch(authActions.getCurrentUserRequest());
-//
-//     axios
-//         .get('/users/current')
-//         .then(response => {
-//             console.log('log in then')
-//             dispatch(authActions.getCurrentUserSuccess(response.data));
-//         })
-//         .catch(error => {
-//             console.log('log in catch')
-//             dispatch(authActions.getCurrentUserError(error.message))
-//         })
-// }
-
-
-const getCurrentUser = () => async dispatch => {
+const getCurrentUser = () => dispatch => {
     const getToken = localStorage.getItem(TOKEN);
 
     if (!axios.defaults.headers.common.Authorization) {
@@ -84,16 +62,17 @@ const getCurrentUser = () => async dispatch => {
 
     dispatch(authActions.getCurrentUserRequest());
 
-    try {
-        const response = await axios.get('/users/current');
-        dispatch(authActions.getCurrentUserSuccess(response.data));
-    } catch (error) {
-        console.log(error);
-        dispatch(authActions.getCurrentUserError(error.message))
-    }
-};
-
-
+    axios
+        .get('/users/current')
+        .then(response => {
+            console.log('log in then')
+            dispatch(authActions.getCurrentUserSuccess(response.data));
+        })
+        .catch(error => {
+            console.log('log in catch')
+            dispatch(authActions.getCurrentUserError(error.message))
+        })
+}
 
 export default {
     registration,
@@ -142,6 +121,7 @@ export default {
 //     }
 // };
 
+
 // const getCurrentUser = () => async dispatch => {
 //     const getToken = localStorage.getItem(TOKEN);
 //
@@ -153,9 +133,10 @@ export default {
 //
 //     try {
 //         const response = await axios.get('/users/current');
-//
 //         dispatch(authActions.getCurrentUserSuccess(response.data));
 //     } catch (error) {
+//         console.log(error);
 //         dispatch(authActions.getCurrentUserError(error.message))
 //     }
 // };
+//

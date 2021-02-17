@@ -1,9 +1,14 @@
 import React, {useEffect} from 'react';
-import {connect} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import appOperators from "../redux/phoneBook/phoneBookOperators";
 import appSelectors from "../redux/phoneBook/phoneBookSelectors";
 
-const ContactList = ({contacts, deleteContact, getContacts}) => {
+export default function ContactList () {
+    const dispatch = useDispatch();
+    const getContacts = () => dispatch(appOperators.getContacts());
+    const deleteContact = id => dispatch(appOperators.deleteContact(id));
+    const contacts = useSelector(appSelectors.getVisibleContacts);
+
     useEffect(() => {
         getContacts();
     }, [])
@@ -23,14 +28,3 @@ const ContactList = ({contacts, deleteContact, getContacts}) => {
         </ul>)
 };
 
-
-const mapStateToProps = state => ({
-    contacts: appSelectors.getVisibleContacts(state),
-});
-
-const mapDispatchFromProps = dispatch => ({
-    deleteContact: id => dispatch(appOperators.deleteContact(id)),
-    getContacts: () => dispatch(appOperators.getContacts()),
-});
-
-export default connect(mapStateToProps, mapDispatchFromProps)(ContactList);

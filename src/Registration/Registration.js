@@ -1,88 +1,143 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, {useState, useEffect, useCallback} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import authOperators from "../redux/auth/authOperators";
 import authSelectors from "../redux/auth/authSelectors";
-
 const TOKEN = 'token';
 
-class Registration extends Component {
-    state = {
+export default function Registration() {
+    const dispatch = useDispatch();
+    const onRegistration = (data) => dispatch(authOperators.registration(data));
+    const token = useSelector(authSelectors.getIsAuthenticated);
+    const [user, setUser] = useState({
         name: '',
-        email: '',
         password: '',
-    }
+        email: '',
+    });
 
-    componentDidUpdate(prevProps, prevState) {
-        const getToken = this.props.token;
+    const handleChange = ({currentTarget: {name, value}}) => {
+        setUser({...user, [name]: value});
+    };
 
-        if(getToken) {
-            localStorage.setItem(TOKEN, JSON.stringify(getToken));
+
+    useEffect(() => {
+        if (token) {
+            localStorage.setItem(TOKEN, JSON.stringify(token));
         }
-    }
-
-    handleChange = event => {
-        const {name, value} = event.currentTarget;
-        this.setState({[name]: value})
-    }
+    }, []);
 
 
-    submitForm = event => {
+    const submitForm = (event) => {
         event.preventDefault()
 
-        this.props.onRegistration(this.state)
-        this.reset()
-    }
+        onRegistration(user);
+        reset();
+    };
 
-
-    reset = () => this.setState({name: "", password: "", email: ""});
-
-    render() {
-        const {name, password, email} = this.state;
-
-        return (
-            <>
-                <h1>Register page</h1>
-                <form onSubmit={this.submitForm} autoComplete="off">
-                    <p>Name</p>
-                    <label>
-                        <input type="text"
-                               name="name"
-                               value={name}
-                               onChange={this.handleChange}/>
-                    </label>
-                    <p>Email</p>
-                    <label>
-                        <input type="text"
-                               name="email"
-                               value={email}
-                               onChange={this.handleChange}/>
-                    </label>
-                    <p>Password</p>
-                    <label>
-                        <input type="text"
-                               name="password"
-                               value={password}
-                               onChange={this.handleChange}/>
-                    </label>
-                    <button type="submit">Register</button>
-                </form>
-            </>
+    const reset = () => {
+        setUser(
+            {
+                name: '',
+                password: '',
+                email: '',
+            }
         )
-    }
+    };
+
+    return (
+        <>
+            <h1>Register page</h1>
+            <form onSubmit={submitForm} autoComplete="off">
+                <p>Name</p>
+                <label>
+                    <input type="text"
+                           name="name"
+                           value={user.name}
+                           onChange={handleChange}/>
+                </label>
+                <p>Email</p>
+                <label>
+                    <input type="text"
+                           name="email"
+                           value={user.email}
+                           onChange={handleChange}/>
+                </label>
+                <p>Password</p>
+                <label>
+                    <input type="text"
+                           name="password"
+                           value={user.password}
+                           onChange={handleChange}/>
+                </label>
+                <button type="submit">Register</button>
+            </form>
+        </>
+    )
 };
 
 
-const mapStateToProps = state => ({
-    token: authSelectors.getIsAuthenticated(state)
-});
 
-const mapDispatchToProps = dispatch => ({
-    onRegistration: (data) => dispatch(authOperators.registration(data)),
-})
-
-// краткая запись
-// const mapDispatchToProps = {
-//     onRegistration: authOperators.registration,
-// }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Registration);
+// export default function Registration() {
+//     const dispatch = useDispatch();
+//     const onRegistration = (data) => dispatch(authOperators.registration(data));
+//     const token = useSelector(authSelectors.getIsAuthenticated);
+//     const [name, setName] = useState('');
+//     const [password, setPassword] = useState('');
+//     const [email, setEmail] = useState('');
+//
+//
+//     useEffect(() => {
+//         if (token) {
+//             localStorage.setItem(TOKEN, JSON.stringify(token));
+//         }
+//     }, []);
+//
+//
+//     const submitForm = event => {
+//         event.preventDefault()
+//
+//         onRegistration({name, password, email});
+//         reset();
+//     };
+//
+//     const reset = () => {
+//         setName('');
+//         setPassword('');
+//         setEmail('');
+//     };
+//
+//     return (
+//         <>
+//             <h1>Register page</h1>
+//             <form onSubmit={submitForm} autoComplete="off">
+//                 <p>Name</p>
+//                 <label>
+//                     <input type="text"
+//                            name="name"
+//                            value={name}
+//                            onChange={(e) => {
+//                                setName(e.currentTarget.value)
+//                            }}/>
+//                 </label>
+//                 <p>Email</p>
+//                 <label>
+//                     <input type="text"
+//                            name="email"
+//                            value={email}
+//                            onChange={(e) => {
+//                                setEmail(e.currentTarget.value)
+//                            }}/>
+//                 </label>
+//                 <p>Password</p>
+//                 <label>
+//                     <input type="text"
+//                            name="password"
+//                            value={password}
+//                            onChange={(e) => {
+//                                setPassword(e.currentTarget.value)
+//                            }}/>
+//                 </label>
+//                 <button type="submit">Register</button>
+//             </form>
+//         </>
+//     )
+// };

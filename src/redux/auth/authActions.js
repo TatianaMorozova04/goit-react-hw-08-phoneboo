@@ -33,8 +33,7 @@ const loginError = error => ({
 const logoutRequest = () => ({
     type: types.LOGOUT_REQUEST,
     payload: {
-    // delete clear
-        reset: localStorage.clear(),
+        reset: localStorage.removeItem('token'),
     },
 });
 

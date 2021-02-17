@@ -1,25 +1,20 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import appActions from "../redux/phoneBook/phoneBookActions";
 import appSelectors from "../redux/phoneBook/phoneBookSelectors"
 
-const Filter = ({ value, onChange }) => (
-    <>
-        <p>Find contacts by name</p>
-        <label>
-            <input type="text"
-                   value={value}
-                   onChange={onChange}/>
-        </label>
-    </>
-);
+export default function Filter () {
+    const dispatch = useDispatch();
+    const onChange = event => dispatch(appActions.changeFilter(event.target.value));
+    const value = useSelector(appSelectors.getFilter);
 
-const mapStateToProps = state => ({
-    value: appSelectors.getFilter(state),
-});
-
-const mapDispatchFromProps = dispatch => ({
-    onChange: (event) => dispatch(appActions.changeFilter(event.target.value))
-});
-
-export default connect(mapStateToProps, mapDispatchFromProps)(Filter);
+    return(
+        <>
+            <p>Find contacts by name</p>
+            <label>
+                <input type="text"
+                       value={value}
+                       onChange={onChange}/>
+            </label>
+        </>)
+};

@@ -1,32 +1,22 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import defaultAvatar from './avatarka.png';
+import React, {useCallback} from 'react';
+import defaultAvatar from './defaultAvatar.png';
 import authSelectors from "../redux/auth/authSelectors";
 import authOperators from "../redux/auth/authOperators";
+import {useDispatch, useSelector} from "react-redux";
 
-const UserPage = ({name, avatar, onLogout}) => (
+export default function UserPage () {
+    const name = useSelector(authSelectors.getUserName);
+
+    const dispatch = useDispatch();
+    const onLogout = useCallback(() => dispatch(authOperators.logOut()), [dispatch]);
+
+    return (
     <div>
         <span>Welcome {name}</span>
         <div>
-            <img src={avatar} alt="avatar" width="48"/>
+            <img src={defaultAvatar} alt="avatar" width="48"/>
         </div>
         <button type="button" onClick={onLogout}>Logout</button>
     </div>
-);
+)};
 
-
-const mapStateToProps = state => ({
-    name: authSelectors.getUserName(state),
-    avatar: defaultAvatar,
-});
-
-const mapDispatchToProps = {
-    onLogout: authOperators.logOut,
-};
-
-//Выше сокращенная запись
-// const mapDispatchToProps = dispatch => ({
-//     onLogout: () => dispatch(authOperators.logOut)
-// });
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserPage);
